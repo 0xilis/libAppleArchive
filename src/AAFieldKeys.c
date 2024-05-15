@@ -13,7 +13,7 @@ struct AAFieldKeySet_impl {
 };
 
 AAFieldKeySet AAFieldKeySetCreate(void) {
-    AAFieldKeySet fieldKeySet = malloc(0x10);
+    AAFieldKeySet fieldKeySet = malloc(sizeof(struct AAFieldKeySet_impl));
     if (!fieldKeySet) {
         ParallelCompressionLogError("malloc");
         return 0;

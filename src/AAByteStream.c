@@ -191,3 +191,16 @@ off_t AAByteStreamSeek(AAByteStream s, off_t offset, int whence) {
     }
     return seekProc(s, offset, whence);
 }
+
+int aaTempFileStreamClose(AAByteStreamTempFileDesc fileDesc) {
+    if (!fileDesc) {
+        return 0;
+    }
+    int fd = fileDesc->fd;
+    if (fd >= 0) {
+        close(fd);
+        unlink(fileDesc->tempDir);
+    }
+    free(fileDesc);
+    return 0;
+}

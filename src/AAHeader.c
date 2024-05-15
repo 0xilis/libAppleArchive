@@ -372,3 +372,44 @@ AAHeader AAHeaderCreateWithEncodedData(size_t headerSize, uint8_t *encodedData) 
     }
     return header;
 }
+
+int AAHeaderClear(AAHeader header) {
+    init_blob_with_magic(header);
+    header->fieldCount = 0;
+    header->payloadSize = 0;
+    return 0;
+}
+
+uint32_t AAHeaderGetFieldCount(AAHeader header) {
+    return header->fieldCount;
+}
+
+int AAHeaderGetKeyIndex(AAHeader header, AAFieldKey key) {
+    /* Maybe not accurate? */
+    int fieldCount = header->fieldCount;
+    if (!fieldCount) {
+        return -1;
+    }
+    void *keys = header->keys;
+    for (int i = 0; i < fieldCount; i++) {
+        uint32_t *fieldKey = keys;
+        if (((*fieldKey ^ key) & 0xffffff) == 0) {
+            /* We found the field key in the header */
+            return i;
+        }
+        keys += 48;
+    }
+    return -1;
+}
+
+uint64_t AAHeaderGetPayloadSize(AAHeader header) {
+    return header->payloadSize;
+}
+
+size_t AAHeaderGetEncodedSize(AAHeader header) {
+    return header->encodedSize;
+}
+
+const uint8_t *AAHeaderGetEncodedData(AAHeader header) {
+    return header->encodedData;
+}
